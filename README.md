@@ -27,7 +27,7 @@ $ vim index.js
 $ node index.js
 ```
 
-![启动输出](https://i.loli.net/2021/06/07/2jFONlBbE8VfChs.png)
+![启动输出](https://i.loli.net/2021/06/07/v1jUkxzaEhSVpcW.png)
 
 ## 使用
 
