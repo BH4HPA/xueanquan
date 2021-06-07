@@ -95,7 +95,7 @@ https://github.com/ENDsoft233/xueanquan/blob/d952206a23100c90ce6a820ea5f59112e99
 
 打开专题活动页，按 F12 调出 Console，输入 specialId 取该专题活动的 specialId。
 
-![操作示例](https://i.loli.net/2021/06/07/5hDR2397gIH4dbT.png)
+![操作示例](https://i.loli.net/2021/06/07/jkcyYEASrOiBVph.png)
 
 不同专题的完成步数查看方法
 
