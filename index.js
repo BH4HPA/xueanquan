@@ -92,6 +92,7 @@ async function _seeVideo(userId, userAccount) {
 }
 
 // 专题活动
+// 如 https://huodong.xueanquan.com/2021fzjz/index.html
 async function _doSign(userId, userAccount, reseted) {
 
     let loginRtn = await _login(userId, userAccount, false)
@@ -114,9 +115,36 @@ async function _doSign(userId, userAccount, reseted) {
     }
 }
 
+// 假期活动
+// 如 https://huodong.xueanquan.com/summer2021/summer_one.html
+async function _doSign2(userId, userAccount, reseted) {
+
+    let loginRtn = await _login(userId, userAccount, false)
+    if (loginRtn.data?.Code !== 1) return;
+
+    throw new Error ("假期活动内容还是原始数据，请按照提示更改。");
+    let schoolYear = 2021; // 打开专题活动页，按 F12 调出 Console，输入 schoolYear、semester 取该专题活动的 schoolYear、semester。
+    let semester = 2;
+    
+    let steps = ['安全知识', '安全素养', '家长扫码']; // 不同专题活动步骤不同，大部分是两步——看视频和答问卷——请按照实际情况修改。
+
+    for (stepId = 1; stepId <= steps.length; stepId++) {
+        let stepRtn = await axios.post('https://huodongapi.xueanquan.com/p/zhejiang/Topic/topic/platformapi/api/v1/holiday/sign',
+            { "schoolYear": schoolYear, "step": stepId, "semester": semester },
+            {
+                headers: {
+                    'Referer': 'https://wenzhou.xueanquan.com/login.html',
+                    'Cookie': `RecordLoginInput_20083=${userAccount}; SafeApp=true; ServerSide=https://wenzhou.xueanquan.com; UserID=${loginRtn.data.UInfo.UserId}; _UCodeStr={%0d%0a  "Grade": ${loginRtn.data.UInfo.Grade},%0d%0a  "ClassRoom": ${loginRtn.data.UInfo.ClassRoom},%0d%0a  "CityCode": ${loginRtn.data.UInfo.CityCode}%0d%0a};`
+                }
+            })
+        console.log(steps[stepId - 1], stepRtn.status, stepRtn.data.result, stepRtn.data.msg)
+    }
+}
+
 let methods = {};
 methods.anquanxuexi = _seeVideo;
 methods.zhuantihuodong = _doSign;
+methods.jiaqihuodong = _doSign2;
 
 async function study(accounts, type, method) {
     console.log(`==========================\n即将开始对 ${accounts.length} 个账号进行自动任务。`)
@@ -144,4 +172,5 @@ let accounts = [];
 
 
 study(accounts, 1, methods.zhuantihuodong);
+study(accounts, 1, methods.jiaqihuodong);
 study(accounts, 1, methods.anquanxuexi);
