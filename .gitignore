@@ -105,3 +105,4 @@ dist
 
 # Visual Studio
 .vs/
+config.js

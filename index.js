@@ -1,6 +1,14 @@
 const { default: axios } = require('axios')
 const qs = require('qs');
 const urlencode = require('urlencode');
+let config;
+try {
+    config = require('./config.js');
+}
+catch{
+    throw new Error ("请将 config_template.js 重命名为 config.js 并按提示修改该文件。")
+}
+
 
 // 登录账号
 async function _login(userId, userAccount, reseted) {
@@ -24,12 +32,7 @@ async function _login(userId, userAccount, reseted) {
     if (loginRtn.data.Code !== 1) {
         if (reseted !== true) {
             console.log('登录失败，即将重置密码并重试。')
-
-            throw new Error ("管理员账号 Cookie 还是原始数据，请按照提示更改。")
-            // 需要替换为有管理权限的账号 Cookie，请访问下述地址并登录，按 F12 后刷新，在 Network 中复制 Cookie 并填入以下声明。
-            // https://wenzhou.xueanquan.com/EduAdmin/Home/
-            let adminCookie = "";
-
+            let adminCookie = config.adminCookie;
             let resetRtn = await axios.get('https://wenzhou.xueanquan.com/eduadmin/ClassManagement/StudentPassWordReset?studentid=' + userId,
                 { headers: { 'Cookie': adminCookie } }
             )
@@ -45,7 +48,6 @@ async function _login(userId, userAccount, reseted) {
     return loginRtn;
 }
 
-// 安全学习
 async function _seeVideo(userId, userAccount) {
 
     let loginRtn = await _login(userId, userAccount, false)
@@ -60,15 +62,13 @@ async function _seeVideo(userId, userAccount) {
     loginRtn.headers['set-cookie'].map(v => cookies = cookies + v.split('domain')[0])
     cookies = cookies + "_UStr=" + UStr + '; ' + `href=https%3A%2F%2Fwenzhou.xueanquan.com%2F; accessId=dd39b150-a934-11e9-b073-e9b8d9c630e7; UM_distinctid=178c95abb657c2-0b00fcb023e3f3-c3f3568-15f900-178c95abb66bac; ${loginRtn.data.UInfo.UserId}_workCnt=1; pageViewNum=3; ASP.NET_SessionId=dcnd3fgidv1lka3rasf3cq2m;`
 
-    throw new Error ("安全学习学习内容还是原始数据，请按照提示更改。");
-    // https://wenzhou.xueanquan.com/JiaTing/EscapeSkill/SeeVideo.aspx?gid=${gid}&li=${courseid}
-    // 在对应的安全学习页源代码第 87 行取 videoid,gid,courseid，第 542 行取 workid,fid,title。
-    let videoid = 23126;
-    let gid = 789;
-    let courseid = 811;
-    let workid = 823837;
-    let fid = 314;
-    let title = "网络是把“双刃剑”";
+    let skill = config.skill;
+    let videoid = skill.videoid;
+    let gid = skill.gid;
+    let courseid = skill.courseid;
+    let workid = skill.workid;
+    let fid = skill.fid;
+    let title = skill.title;
 
     await axios.get(`https://wenzhou.xueanquan.com/JiaTing/EscapeSkill/SeeVideo.aspx?gid=${gid}&li=${courseid}`,
         {
@@ -91,16 +91,14 @@ async function _seeVideo(userId, userAccount) {
     console.log('答题返回', seeRtn.status, seeRtn.data)
 }
 
-// 专题活动
-// 如 https://huodong.xueanquan.com/2021fzjz/index.html
 async function _doSign(userId, userAccount, reseted) {
 
     let loginRtn = await _login(userId, userAccount, false)
     if (loginRtn.data?.Code !== 1) return;
 
-    throw new Error ("专题活动学习内容还是原始数据，请按照提示更改。");
-    let specialId = 578; // 打开专题活动页，按 F12 调出 Console，输入 specialId 取该专题活动的 specialId。
-    let steps = ['视频签到', '问卷签到']; // 不同专题活动步骤不同，大部分是两步——看视频和答问卷——请按照实际情况修改。
+    let special = config.special;
+    let specialId = special.specialId;
+    let steps = special.steps;
 
     for (stepId = 1; stepId <= steps.length; stepId++) {
         let stepRtn = await axios.post('https://huodongapi.xueanquan.com/p/zhejiang/Topic/topic/platformapi/api/v1/records/sign',
@@ -115,18 +113,15 @@ async function _doSign(userId, userAccount, reseted) {
     }
 }
 
-// 假期活动
-// 如 https://huodong.xueanquan.com/summer2021/summer_one.html
 async function _doSign2(userId, userAccount, reseted) {
 
     let loginRtn = await _login(userId, userAccount, false)
     if (loginRtn.data?.Code !== 1) return;
 
-    throw new Error ("假期活动内容还是原始数据，请按照提示更改。");
-    let schoolYear = 2021; // 打开专题活动页，按 F12 调出 Console，输入 schoolYear、semester 取该专题活动的 schoolYear、semester。
-    let semester = 2;
-    
-    let steps = ['安全知识', '安全素养', '家长扫码']; // 不同专题活动步骤不同，大部分是两步——看视频和答问卷——请按照实际情况修改。
+    let holiday = config.holiday;
+    let schoolYear = holiday.schoolYear;
+    let semester = holiday.semester;
+    let steps = holiday.steps;
 
     for (stepId = 1; stepId <= steps.length; stepId++) {
         let stepRtn = await axios.post('https://huodongapi.xueanquan.com/p/zhejiang/Topic/topic/platformapi/api/v1/holiday/sign',
@@ -141,10 +136,7 @@ async function _doSign2(userId, userAccount, reseted) {
     }
 }
 
-let methods = {};
-methods.anquanxuexi = _seeVideo;
-methods.zhuantihuodong = _doSign;
-methods.jiaqihuodong = _doSign2;
+let methods = [_seeVideo,_doSign,_doSign2];
 
 async function study(accounts, type, method) {
     console.log(`==========================\n即将开始对 ${accounts.length} 个账号进行自动任务。`)
@@ -161,16 +153,10 @@ async function study(accounts, type, method) {
         console.log('==========================\n无法理解的操作类型。\n==========================')
     }
 }
+let accounts = config.accounts;
+let method = config.willDo;
 
-throw new Error ("学生账号列表还是原始数据，请按照提示更改。");
-// 获取 accounts 请访问并登录
-// https://wenzhou.xueanquan.com/EduAdmin/Home/Index#ClassManagement_Manage
-// [...document.querySelectorAll('div.gridTbody > table > tbody > tr')].map(v => v.getAttribute("rel"))
-// 在控制台键入以上 js 代码取账号列表并粘贴到以下声明中。
-let accounts = [];
-
-
-
-study(accounts, 1, methods.zhuantihuodong);
-study(accounts, 1, methods.jiaqihuodong);
-study(accounts, 1, methods.anquanxuexi);
+if (method = 3) {
+    console.log(`==========================\n欢迎使用，您已经填入了 ${accounts.length} 个账号，${config.adminCookie === "" ? "还未填写" : "已经填写了"}管理员 Cookie${config.adminCookie === "" ? "，请仔细阅读 config.js 中的注释提示" : "，请更换 willDo 中的 method 方式开始操作"}。`)
+    console.log('==========================\n已完成。\n==========================')
+} else study(accounts, 1, methods[method]);
