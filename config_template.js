@@ -10,9 +10,6 @@ let accounts = [];
 // https://wenzhou.xueanquan.com/EduAdmin/Home/
 let adminCookie = "";
 
-exports.accounts = accounts;
-exports.adminCookie = adminCookie;
-
 /* === 假期活动 === */
 // 如 https://huodong.xueanquan.com/summer2021/summer_one.html
 let holiday = {};
@@ -21,16 +18,12 @@ holiday.schoolYear = 2021; // 打开专题活动页，按 F12 调出 Console，�
 holiday.semester = 2;
 holiday.steps = ['安全知识', '安全素养', '家长扫码']; // 不同专题活动步骤不同，大部分是两步——看视频和答问卷——请按照实际情况修改。
 
-exports.holiday = holiday;
-
 /* === 专题活动 === */
 // 如 https://huodong.xueanquan.com/2021fzjz/index.html
 let special = {};
 
 special.specialId = 578; // 打开专题活动页，按 F12 调出 Console，输入 specialId 取该专题活动的 specialId。
 special.steps = ['视频签到', '问卷签到']; // 不同专题活动步骤不同，大部分是两步——看视频和答问卷——请按照实际情况修改。
-
-exports.special = special;
 
 /* === 安全学习 === */
 let skill = {};
@@ -44,8 +37,6 @@ skill.workid = 823837;
 skill.fid = 314;
 skill.title = "网络是把“双刃剑”";
 
-exports.skill = skill;
-
 /* === 执行操作 === */
 let methods = {};
 methods.anquanxuexi = 0; // 安全学习
@@ -55,4 +46,16 @@ methods.listInfo = 3;
 
 let willDo = methods.listInfo;
 
+
+
+
+
+
+
+// 与你无关的东西
+exports.accounts = accounts;
+exports.adminCookie = adminCookie;
+exports.holiday = holiday;
+exports.special = special;
+exports.skill = skill;
 exports.willDo = willDo;
