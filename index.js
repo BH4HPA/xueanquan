@@ -37,7 +37,7 @@ async function _login(userId, userAccount, reseted) {
                 { headers: { 'Cookie': adminCookie } }
             )
             console.log('重置返回', resetRtn.status, resetRtn.data.statusCode, resetRtn.data.message);
-            return login(userId, userAccount, true);
+            return _login(userId, userAccount, true);
         } else {
             console.log('重置后仍然登录失败，请检查。')
             throw new Error ("管理员账号 Cookie 可能已经失效。")
@@ -156,7 +156,7 @@ async function study(accounts, type, method) {
 let accounts = config.accounts;
 let method = config.willDo;
 
-if (method = 3) {
+if (method === 3) {
     console.log(`==========================\n欢迎使用，您已经填入了 ${accounts.length} 个账号，${config.adminCookie === "" ? "还未填写" : "已经填写了"}管理员 Cookie${config.adminCookie === "" ? "，请仔细阅读 config.js 中的注释提示" : "，请更换 willDo 中的 method 方式开始操作"}。`)
     console.log('==========================\n已完成。\n==========================')
 } else study(accounts, 1, methods[method]);
