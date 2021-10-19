@@ -1,12 +1,14 @@
 const { default: axios } = require('axios')
 const qs = require('qs');
 const urlencode = require('urlencode');
+const fs = require('fs');
 let config;
 try {
     config = require('./config.js');
 }
 catch{
-    throw new Error ("请将 config_template.js 重命名为 config.js 并按提示修改该文件。")
+    let exists = fs.existsSync('./config.js');
+    throw new Error (exists ? "无法导入 config.js ，请尝试运行 node config.js 检查其内容是否存在问题。" : "请将 config_template.js 重命名为 config.js 并按提示修改该文件。")
 }
 
 
