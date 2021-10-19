@@ -7,9 +7,8 @@ try {
     config = require('./config.js');
 }
 catch{
-    fs.exists('./config.js', function(exists) {
-        throw new Error (exists ? "无法导入 config.js ，请尝试运行 node config.js 检查其内容是否存在问题。" : "请将 config_template.js 重命名为 config.js 并按提示修改该文件。")
-    });
+    let exists = fs.existsSync('./config.js');
+    throw new Error (exists ? "无法导入 config.js ，请尝试运行 node config.js 检查其内容是否存在问题。" : "请将 config_template.js 重命名为 config.js 并按提示修改该文件。")
 }
 
 
