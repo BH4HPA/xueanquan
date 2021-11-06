@@ -1,5 +1,15 @@
 /* === 个人信息 === */
 
+// 请先确定你所在的省市的学安全相关地理信息。
+// serverside 为你所在地区学安全域名的子域名，一般说来即为市的全拼：
+// https://wenzhou.xueanquan.com
+//         ^^^^^^^
+// 若需要操作专题活动，你可能还需要先抓包查看你所在地区的活动服务端，一般说来即为省的全拼。
+// https://huodongapi.xueanquan.com/p/zhejiang/Topic/topic/platformapi/api/v1/records/sign
+//                                    ^^^^^^^^
+let serverside = 'wenzhou';
+let huodongProvince = 'zhejiang';
+
 // 获取 accounts 请访问并登录
 // https://wenzhou.xueanquan.com/EduAdmin/Home/Index#ClassManagement_Manage
 // [...document.querySelectorAll('div.gridTbody > table > tbody > tr')].map(v => v.getAttribute("rel"))
@@ -8,7 +18,8 @@ let accounts = [];
 
 // 需要替换为有管理权限的账号 Cookie，请访问下述地址并登录，按 F12 后刷新，在 Network 中复制 Cookie 并填入以下声明。
 // https://wenzhou.xueanquan.com/EduAdmin/Home/
-let adminCookie = "";
+// 对于小白，请注意：复制过来的 Cookie 不应包含中文，若有请进行 urlencode ，对于其中的引号，若与最外部引号重复应进行修改。
+let adminCookie = ``;
 
 /* === 假期活动 === */
 // 如 https://huodong.xueanquan.com/summer2021/summer_one.html
@@ -53,6 +64,8 @@ let willDo = methods.listInfo;
 
 
 // 与你无关的东西
+exports.serverside = serverside;
+exports.huodongProvince = huodongProvince;
 exports.accounts = accounts;
 exports.adminCookie = adminCookie;
 exports.holiday = holiday;
