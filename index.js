@@ -16,7 +16,7 @@ async function _login (userId, userAccount, reseted) {
   let loginRtn = await axios.post(`https://${config.serverside}.xueanquan.com/LoginHandler.ashx`,
     qs.stringify({
       userName: userAccount,
-      password: '123456',// 重置后的默认密码
+      password: `Aa6666${userAccount}`,// 重置后的默认密码
       type: 'login',
       loginType: 1,
       r: Math.random()
